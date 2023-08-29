@@ -616,6 +616,7 @@ def analyze_videos(
     # Looping over videos
     ##################################################
     Videos = auxiliaryfunctions.get_list_of_videos(videos, videotype, in_random_order)
+    print('Consegui retornar os frames {}'.format(Videos))
     if len(Videos) > 0:
         if "multi-animal" in dlc_cfg["dataset_type"]:
             from deeplabcut.pose_estimation_tensorflow.predict_multianimal import (
