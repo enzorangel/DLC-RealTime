@@ -106,7 +106,7 @@ class OpenVINOSession:
 def GetPoseF_OV(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
     """Prediction of pose"""
     PredictedData = np.zeros((nframes, 3 * len(dlc_cfg["all_joints_names"])))
-    ny, nx = int(cap.get(4)), int(cap.get(3))
+    ny, nx = cap.shape[:2]
     if cfg["cropping"]:
         ny, nx = checkcropping(cfg, cap)
 
@@ -125,23 +125,24 @@ def GetPoseF_OV(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
 
     sess.infer_queue.set_callback(completion_callback)
 
-    while cap.isOpened():
-        if counter % step == 0:
-            pbar.update(step)
-        ret, frame = cap.read()
-        if not ret:
-            break
+    # while cap.isOpened():
+    # if counter % step == 0:
+    #     pbar.update(step)
+    # ret, frame = cap.read()
+    # if not ret:
+    #     break
+    
 
-        # Prepare input data
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        if cfg["cropping"]:
-            frame = frame[cfg["y1"] : cfg["y2"], cfg["x1"] : cfg["x2"]]
+    # Prepare input data
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    if cfg["cropping"]:
+        frame = frame[cfg["y1"] : cfg["y2"], cfg["x1"] : cfg["x2"]]
 
-        sess.infer_queue.start_async(
-            {sess.input_name: np.expand_dims(frame, axis=0)}, counter
-        )
+    sess.infer_queue.start_async(
+        {sess.input_name: np.expand_dims(frame, axis=0)}, counter
+    )
 
-        counter += 1
+    # counter += 1
 
     sess.infer_queue.wait_all()
 
