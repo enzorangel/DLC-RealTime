@@ -1103,23 +1103,23 @@ def AnalyzeVideo(
     else:
         coords = [0, nx, 0, ny]
 
-    dictionary = {
-        "start": start,
-        "stop": stop,
-        "run_duration": stop - start,
-        "Scorer": DLCscorer,
-        "DLC-model-config file": dlc_cfg,
-        "fps": fps,
-        "batch_size": dlc_cfg["batch_size"],
-        "frame_dimensions": (ny, nx),
-        "nframes": nframes,
-        "iteration (active-learning)": cfg["iteration"],
-        "training set fraction": trainFraction,
-        "cropping": cfg["cropping"],
-        "cropping_parameters": coords
-        # "gpu_info": device_lib.list_local_devices()
-    }
-    metadata = {"data": dictionary}
+    # dictionary = {
+    #     "start": start,
+    #     "stop": stop,
+    #     "run_duration": stop - start,
+    #     "Scorer": DLCscorer,
+    #     "DLC-model-config file": dlc_cfg,
+    #     "fps": fps,
+    #     "batch_size": dlc_cfg["batch_size"],
+    #     "frame_dimensions": (ny, nx),
+    #     "nframes": nframes,
+    #     "iteration (active-learning)": cfg["iteration"],
+    #     "training set fraction": trainFraction,
+    #     "cropping": cfg["cropping"],
+    #     "cropping_parameters": coords
+    #     # "gpu_info": device_lib.list_local_devices()
+    # }
+    # metadata = {"data": dictionary}
 
     print(f"Saving results in {destfolder}...")
     # dataname = os.path.join(destfolder, vname + DLCscorer + ".h5")
