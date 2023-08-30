@@ -1013,7 +1013,8 @@ def AnalyzeVideo(
     use_openvino="CPU" if is_openvino_available else None,
 ):
     """Helper function for analyzing a video."""
-    print("Starting to analyze % ", video)
+    # print("Starting to analyze % ", video)
+    print("Starting to analyze")
 
     # if destfolder is None:
     #     destfolder = str(Path(video).parents[0])
@@ -1022,7 +1023,7 @@ def AnalyzeVideo(
     # try:
     #     _ = auxiliaryfunctions.load_analyzed_data(destfolder, vname, DLCscorer)
     # except FileNotFoundError:
-    print("Loading ", video)
+    # print("Loading ", video)
     # cap = cv2.VideoCapture(video)
     # if not cap.isOpened():
     #     raise IOError(
