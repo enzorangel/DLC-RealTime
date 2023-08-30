@@ -1036,7 +1036,7 @@ def AnalyzeVideo(
     #     int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
     #     int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
     # )
-    # ny, nx = video.shape[:2]
+    ny, nx = video.shape[:2]
     # print(
     #     "Duration of video [s]: ",
     #     round(duration, 2),
