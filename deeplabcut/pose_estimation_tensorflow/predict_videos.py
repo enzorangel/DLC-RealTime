@@ -739,7 +739,7 @@ def GetPoseF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
     frames = np.empty(
         (batchsize, ny, nx, 3), dtype="ubyte"
     )  # this keeps all frames in a batch
-    pbar = tqdm(total=nframes)
+    # pbar = tqdm(total=nframes)
     counter = 0
     #step = max(10, int(nframes / 100))
     inds = []
@@ -774,7 +774,7 @@ def GetPoseF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
             #     break
         counter += 1
 
-    pbar.close()
+    # pbar.close()
     return PredictedData, nframes
 
 
@@ -786,7 +786,7 @@ def GetPoseS(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes):
     PredictedData = np.zeros(
         (nframes, dlc_cfg["num_outputs"] * 3 * len(dlc_cfg["all_joints_names"]))
     )
-    pbar = tqdm(total=nframes)
+    # pbar = tqdm(total=nframes)
     counter = 0
     step = max(10, int(nframes / 100))
     # while cap.isOpened():
@@ -814,7 +814,7 @@ def GetPoseS(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes):
             #     break
         counter += 1
 
-    pbar.close()
+    # pbar.close()
     return PredictedData, nframes
 
 
@@ -882,7 +882,7 @@ def GetPoseF_GTF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
     pose_tensor = tf.reshape(pose_tensor, (batchsize, -1))
 
     frames = np.empty((batchsize, ny, nx, 3), dtype="ubyte")
-    pbar = tqdm(total=nframes)
+    # pbar = tqdm(total=nframes)
     counter = 0
     inds = []
     # while cap.isOpened() and counter < nframes - 1:
@@ -914,7 +914,7 @@ def GetPoseF_GTF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
             pbar.update(batch_ind)
         counter += 1
 
-    pbar.close()
+    # pbar.close()
     return PredictedData, nframes
 
 
