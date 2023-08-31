@@ -1037,6 +1037,7 @@ def AnalyzeVideo(
     # # https://docs.opencv.org/2.4/modules/highgui/doc/reading_and_writing_images_and_video.html#videocapture-get
     # fps = cap.get(cv2.CAP_PROP_FPS)
     nframes = len(video)
+    print(nframes)
     # duration = nframes * 1.0 / fps
     # size = (
     #     int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
