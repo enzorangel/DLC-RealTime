@@ -748,8 +748,7 @@ def GetPoseF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
     #         pbar.update(step)
     #     ret, frame = cap.read()
     #     if ret:
-    frames = cap
-    for frame in frames:
+    for frame in cap:
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         if cfg["cropping"]:
             frames[batch_ind] = img_as_ubyte(
@@ -892,8 +891,7 @@ def GetPoseF_GTF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
     #     if not ret:
     #         warnings.warn(f"Could not decode frame #{counter}.")
     #         continue
-    frame = cap
-    for frame in frames:
+    for frame in cap:
         if cfg["cropping"]:
             frame = img_as_ubyte(frame[cfg["y1"] : cfg["y2"], cfg["x1"] : cfg["x2"]])
         else:
@@ -1037,7 +1035,6 @@ def AnalyzeVideo(
     # # https://docs.opencv.org/2.4/modules/highgui/doc/reading_and_writing_images_and_video.html#videocapture-get
     # fps = cap.get(cv2.CAP_PROP_FPS)
     nframes = len(video)
-    print(nframes)
     # duration = nframes * 1.0 / fps
     # size = (
     #     int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
