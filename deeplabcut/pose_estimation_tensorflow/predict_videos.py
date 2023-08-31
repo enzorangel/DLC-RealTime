@@ -732,7 +732,7 @@ def GetPoseF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
     # ny, nx = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), int(
     #     cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     # )
-    ny, nx = cap.shape[:2]
+    ny, nx = cap[0].shape[:2]
     if cfg["cropping"]:
         ny, nx = checkcropping(cfg, cap)
 
@@ -873,7 +873,7 @@ def GetPoseF_GTF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
     batch_num = 0  # keeps track of which batch you are at
     # ny = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     # nx = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    ny, nx = cap.shape[:2]
+    ny, nx = cap[0].shape[:2]
     if cfg["cropping"]:
         ny, nx = checkcropping(cfg, cap)
 
