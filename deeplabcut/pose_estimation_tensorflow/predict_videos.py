@@ -679,20 +679,20 @@ def analyze_videos(
             )
 
         os.chdir(str(start_path))
-        if "multi-animal" in dlc_cfg["dataset_type"]:
-            print(
-                "The videos are analyzed. Time to assemble animals and track 'em... \n Call 'create_video_with_all_detections' to check multi-animal detection quality before tracking."
-            )
-            print(
-                "If the tracking is not satisfactory for some videos, consider expanding the training set. You can use the function 'extract_outlier_frames' to extract a few representative outlier frames."
-            )
-        else:
-            print(
-                "The videos are analyzed. Now your research can truly start! \n You can create labeled videos with 'create_labeled_video'"
-            )
-            print(
-                "If the tracking is not satisfactory for some videos, consider expanding the training set. You can use the function 'extract_outlier_frames' to extract a few representative outlier frames."
-            )
+        # if "multi-animal" in dlc_cfg["dataset_type"]:
+        #     print(
+        #         "The videos are analyzed. Time to assemble animals and track 'em... \n Call 'create_video_with_all_detections' to check multi-animal detection quality before tracking."
+        #     )
+        #     print(
+        #         "If the tracking is not satisfactory for some videos, consider expanding the training set. You can use the function 'extract_outlier_frames' to extract a few representative outlier frames."
+        #     )
+        # else:
+        #     print(
+        #         "The videos are analyzed. Now your research can truly start! \n You can create labeled videos with 'create_labeled_video'"
+        #     )
+        #     print(
+        #         "If the tracking is not satisfactory for some videos, consider expanding the training set. You can use the function 'extract_outlier_frames' to extract a few representative outlier frames."
+        #     )
         return DataMachine # DLCscorer # note: this is either DLCscorer or DLCscorerlegacy depending on what was used!
     else:
         print("No video(s) were found. Please check your paths and/or 'video_type'.")
@@ -826,7 +826,7 @@ def GetPoseS_GTF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes):
         outputs, dlc_cfg
     )  # extract_output_tensor(outputs, dlc_cfg)
     PredictedData = np.zeros((nframes, 3 * len(dlc_cfg["all_joints_names"])))
-    pbar = tqdm(total=nframes)
+    # pbar = tqdm(total=nframes)
     counter = 0
     step = max(10, int(nframes / 100))
     # while cap.isOpened():
@@ -859,7 +859,7 @@ def GetPoseS_GTF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes):
         #     break
         # counter += 1
 
-    pbar.close()
+    # pbar.close()
     return PredictedData, nframes
 
 
@@ -1055,7 +1055,7 @@ def AnalyzeVideo(
 
     dynamic_analysis_state, detectiontreshold, margin = dynamic
     start = time.time()
-    print("Starting to extract posture")
+    # print("Starting to extract posture")
     if dynamic_analysis_state:
         PredictedData, nframes = GetPoseDynamic(
             cfg,
@@ -1070,7 +1070,6 @@ def AnalyzeVideo(
         )
         # GetPoseF_GTF(cfg,dlc_cfg, sess, inputs, outputs,cap,nframes,int(dlc_cfg["batch_size"]))
     else:
-        print(dlc_cfg["batch_size"])
         if int(dlc_cfg["batch_size"]) > 1:
             args = (
                 cfg,
@@ -1083,22 +1082,22 @@ def AnalyzeVideo(
                 int(dlc_cfg["batch_size"]),
             )
             if use_openvino:
-                print('use_openvino')
+                # print('use_openvino')
                 PredictedData, nframes = GetPoseF_OV(*args)
             elif TFGPUinference:
-                print('TFGPUinference')
+                # print('TFGPUinference')
                 PredictedData, nframes = GetPoseF_GTF(*args)
             else:
-                print('GetPoseF')
+                # print('GetPoseF')
                 PredictedData, nframes = GetPoseF(*args)
         else:
             if TFGPUinference:
-                print('TFGPUinference with the batchsize < 1')
+                # print('TFGPUinference with the batchsize < 1')
                 PredictedData, nframes = GetPoseS_GTF(
                     cfg, dlc_cfg, sess, inputs, outputs, video, nframes
                 )
             else:
-                print('GetPoseS with the batchsize < 1')
+                # print('GetPoseS with the batchsize < 1')
                 PredictedData, nframes = GetPoseS(
                     cfg, dlc_cfg, sess, inputs, outputs, video, nframes
                 )
