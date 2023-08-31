@@ -537,7 +537,7 @@ def analyze_videos(
     increasing_indices = np.argsort([int(m.split("-")[1]) for m in Snapshots])
     Snapshots = Snapshots[increasing_indices]
 
-    print("Using %s" % Snapshots[snapshotindex], "for model", modelfolder)
+    # print("Using %s" % Snapshots[snapshotindex], "for model", modelfolder)
 
     ##################################################
     # Load and setup CNN part detector
@@ -1070,6 +1070,7 @@ def AnalyzeVideo(
         )
         # GetPoseF_GTF(cfg,dlc_cfg, sess, inputs, outputs,cap,nframes,int(dlc_cfg["batch_size"]))
     else:
+        print(dlc_cfg["batch_size"])
         if int(dlc_cfg["batch_size"]) > 1:
             args = (
                 cfg,
