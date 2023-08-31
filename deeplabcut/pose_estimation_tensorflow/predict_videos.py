@@ -904,14 +904,14 @@ def GetPoseF_GTF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
             batch_ind = 0
             batch_num += 1
             inds.clear()
-            pbar.update(batchsize)
+            # pbar.update(batchsize)
         else:
             batch_ind += 1
 
         if batch_ind > 0:
             pose = sess.run(pose_tensor, feed_dict={inputs: frames})
             PredictedData[inds[:batch_ind]] = pose[:batch_ind]
-            pbar.update(batch_ind)
+            # pbar.update(batch_ind)
         counter += 1
 
     # pbar.close()
