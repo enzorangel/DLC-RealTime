@@ -748,31 +748,32 @@ def GetPoseF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
     #         pbar.update(step)
     #     ret, frame = cap.read()
     #     if ret:
-    frame = cap
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    if cfg["cropping"]:
-        frames[batch_ind] = img_as_ubyte(
-            frame[cfg["y1"] : cfg["y2"], cfg["x1"] : cfg["x2"]]
-        )
-    else:
-        frames[batch_ind] = img_as_ubyte(frame)
-    inds.append(counter)
-    if batch_ind == batchsize - 1:
-        pose = predict.getposeNP(frames, dlc_cfg, sess, inputs, outputs)
-        PredictedData[inds] = pose
-        batch_ind = 0
-        inds.clear()
-        batch_num += 1
-    else:
-        batch_ind += 1
-        # elif counter >= nframes:
-        #     if batch_ind > 0:
-        #         pose = predict.getposeNP(
-        #             frames, dlc_cfg, sess, inputs, outputs
-        #         )  # process the whole batch (some frames might be from previous batch!)
-        #         PredictedData[inds[:batch_ind]] = pose[:batch_ind]
-        #     break
-        # counter += 1
+    frames = cap
+    for frame in frames:
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        if cfg["cropping"]:
+            frames[batch_ind] = img_as_ubyte(
+                frame[cfg["y1"] : cfg["y2"], cfg["x1"] : cfg["x2"]]
+            )
+        else:
+            frames[batch_ind] = img_as_ubyte(frame)
+        inds.append(counter)
+        if batch_ind == batchsize - 1:
+            pose = predict.getposeNP(frames, dlc_cfg, sess, inputs, outputs)
+            PredictedData[inds] = pose
+            batch_ind = 0
+            inds.clear()
+            batch_num += 1
+        else:
+            batch_ind += 1
+            # elif counter >= nframes:
+            #     if batch_ind > 0:
+            #         pose = predict.getposeNP(
+            #             frames, dlc_cfg, sess, inputs, outputs
+            #         )  # process the whole batch (some frames might be from previous batch!)
+            #         PredictedData[inds[:batch_ind]] = pose[:batch_ind]
+            #     break
+        counter += 1
 
     pbar.close()
     return PredictedData, nframes
@@ -795,23 +796,24 @@ def GetPoseS(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes):
 
     #     ret, frame = cap.read()
     #     if ret:
-    frame = cap
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    if cfg["cropping"]:
-        frame = img_as_ubyte(
-            frame[cfg["y1"] : cfg["y2"], cfg["x1"] : cfg["x2"]]
-        )
-    else:
-        frame = img_as_ubyte(frame)
-    pose = predict.getpose(frame, dlc_cfg, sess, inputs, outputs)
-    PredictedData[
-        counter, :
-    ] = (
-        pose.flatten()
-    )  # NOTE: thereby cfg['all_joints_names'] should be same order as bodyparts!
-        # elif counter >= nframes:
-        #     break
-        # counter += 1
+    frames = cap
+    for frame in frames:
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        if cfg["cropping"]:
+            frame = img_as_ubyte(
+                frame[cfg["y1"] : cfg["y2"], cfg["x1"] : cfg["x2"]]
+            )
+        else:
+            frame = img_as_ubyte(frame)
+        pose = predict.getpose(frame, dlc_cfg, sess, inputs, outputs)
+        PredictedData[
+            counter, :
+        ] = (
+            pose.flatten()
+        )  # NOTE: thereby cfg['all_joints_names'] should be same order as bodyparts!
+            # elif counter >= nframes:
+            #     break
+        counter += 1
 
     pbar.close()
     return PredictedData, nframes
@@ -835,29 +837,30 @@ def GetPoseS_GTF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes):
 
     #     ret, frame = cap.read()
     #     if ret:
-    frame = cap
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    if cfg["cropping"]:
-        frame = img_as_ubyte(
-            frame[cfg["y1"] : cfg["y2"], cfg["x1"] : cfg["x2"]]
-        )
-    else:
-        frame = img_as_ubyte(frame)
+    frames = cap
+    for frame in frames:
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        if cfg["cropping"]:
+            frame = img_as_ubyte(
+                frame[cfg["y1"] : cfg["y2"], cfg["x1"] : cfg["x2"]]
+            )
+        else:
+            frame = img_as_ubyte(frame)
 
-    pose = sess.run(
-        pose_tensor,
-        feed_dict={inputs: np.expand_dims(frame, axis=0).astype(float)},
-    )
-    pose[:, [0, 1, 2]] = pose[:, [1, 0, 2]]
-    # pose = predict.getpose(frame, dlc_cfg, sess, inputs, outputs)
-    PredictedData[
-        counter, :
-    ] = (
-        pose.flatten()
-    )  # NOTE: thereby cfg['all_joints_names'] should be same order as bodyparts!
-        # elif counter >= nframes:
-        #     break
-        # counter += 1
+        pose = sess.run(
+            pose_tensor,
+            feed_dict={inputs: np.expand_dims(frame, axis=0).astype(float)},
+        )
+        pose[:, [0, 1, 2]] = pose[:, [1, 0, 2]]
+        # pose = predict.getpose(frame, dlc_cfg, sess, inputs, outputs)
+        PredictedData[
+            counter, :
+        ] = (
+            pose.flatten()
+        )  # NOTE: thereby cfg['all_joints_names'] should be same order as bodyparts!
+            # elif counter >= nframes:
+            #     break
+        counter += 1
 
     # pbar.close()
     return PredictedData, nframes
@@ -890,26 +893,28 @@ def GetPoseF_GTF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
     #         warnings.warn(f"Could not decode frame #{counter}.")
     #         continue
     frame = cap
-    if cfg["cropping"]:
-        frame = img_as_ubyte(frame[cfg["y1"] : cfg["y2"], cfg["x1"] : cfg["x2"]])
-    else:
-        frame = img_as_ubyte(frame)
-    frames[batch_ind] = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    inds.append(counter)
-    if batch_ind == batchsize - 1:
-        pose = sess.run(pose_tensor, feed_dict={inputs: frames})
-        PredictedData[inds] = pose
-        batch_ind = 0
-        batch_num += 1
-        inds.clear()
-        pbar.update(batchsize)
-    else:
-        batch_ind += 1
+    for frame in frames:
+        if cfg["cropping"]:
+            frame = img_as_ubyte(frame[cfg["y1"] : cfg["y2"], cfg["x1"] : cfg["x2"]])
+        else:
+            frame = img_as_ubyte(frame)
+        frames[batch_ind] = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        inds.append(counter)
+        if batch_ind == batchsize - 1:
+            pose = sess.run(pose_tensor, feed_dict={inputs: frames})
+            PredictedData[inds] = pose
+            batch_ind = 0
+            batch_num += 1
+            inds.clear()
+            pbar.update(batchsize)
+        else:
+            batch_ind += 1
 
-    if batch_ind > 0:
-        pose = sess.run(pose_tensor, feed_dict={inputs: frames})
-        PredictedData[inds[:batch_ind]] = pose[:batch_ind]
-        pbar.update(batch_ind)
+        if batch_ind > 0:
+            pose = sess.run(pose_tensor, feed_dict={inputs: frames})
+            PredictedData[inds[:batch_ind]] = pose[:batch_ind]
+            pbar.update(batch_ind)
+        counter += 1
 
     pbar.close()
     return PredictedData, nframes
@@ -1031,13 +1036,13 @@ def AnalyzeVideo(
     #     )
     # # https://docs.opencv.org/2.4/modules/highgui/doc/reading_and_writing_images_and_video.html#videocapture-get
     # fps = cap.get(cv2.CAP_PROP_FPS)
-    nframes = 1
+    nframes = len(video)
     # duration = nframes * 1.0 / fps
     # size = (
     #     int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
     #     int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
     # )
-    ny, nx = video.shape[:2]
+    ny, nx = video[0].shape[:2]
     # print(
     #     "Duration of video [s]: ",
     #     round(duration, 2),
