@@ -1014,7 +1014,7 @@ def AnalyzeVideo(
 ):
     """Helper function for analyzing a video."""
     # print("Starting to analyze % ", video)
-    print("Starting to analyze")
+    # print("Starting to analyze")
 
     # if destfolder is None:
     #     destfolder = str(Path(video).parents[0])
@@ -1082,17 +1082,22 @@ def AnalyzeVideo(
                 int(dlc_cfg["batch_size"]),
             )
             if use_openvino:
+                print('use_openvino')
                 PredictedData, nframes = GetPoseF_OV(*args)
             elif TFGPUinference:
+                print('TFGPUinference')
                 PredictedData, nframes = GetPoseF_GTF(*args)
             else:
+                print('GetPoseF')
                 PredictedData, nframes = GetPoseF(*args)
         else:
             if TFGPUinference:
+                print('TFGPUinference with the batchsize < 1')
                 PredictedData, nframes = GetPoseS_GTF(
                     cfg, dlc_cfg, sess, inputs, outputs, video, nframes
                 )
             else:
+                print('GetPoseS with the batchsize < 1')
                 PredictedData, nframes = GetPoseS(
                     cfg, dlc_cfg, sess, inputs, outputs, video, nframes
                 )
@@ -1121,7 +1126,7 @@ def AnalyzeVideo(
     # }
     # metadata = {"data": dictionary}
 
-    print(f"Saving results in {destfolder}...")
+    # print(f"Saving results in {destfolder}...")
     # dataname = os.path.join(destfolder, vname + DLCscorer + ".h5")
     # auxiliaryfunctions.save_data(
     #     PredictedData[:nframes, :],
