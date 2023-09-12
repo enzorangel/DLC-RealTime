@@ -607,10 +607,12 @@ def analyze_videos(
             dlc_cfg, allow_growth=allow_growth
         )
 
-    pdindex = pd.MultiIndex.from_product(
-        [[DLCscorer], dlc_cfg["all_joints_names"], xyz_labs],
-        names=["scorer", "bodyparts", "coords"],
-    )
+    #pdindex = pd.MultiIndex.from_product(
+    #    [[DLCscorer], dlc_cfg["all_joints_names"], xyz_labs],
+    #    names=["scorer", "bodyparts", "coords"],
+    #)
+
+    pdindex = [s+'('+x+')' for s in dlc_cfg["all_joints_names"] for x in xyz_labs]
 
     ##################################################
     # Looping over videos
