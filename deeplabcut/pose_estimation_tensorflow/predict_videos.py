@@ -686,7 +686,7 @@ def analyze_videos(
         array = array[:, [i for i in range(array.shape[1]) if i not in remove]]
 
         index = np.asarray(pdindex)
-        index = index[[i for i in range(index.shape[0]) if i not in remove]]
+        index = [index[i] for i in range(len(index)) if i not in remove]
 
         return array,index # DLCscorer # note: this is either DLCscorer or DLCscorerlegacy depending on what was used!
     else:
