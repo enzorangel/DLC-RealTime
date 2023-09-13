@@ -607,17 +607,10 @@ def analyze_videos(
             dlc_cfg, allow_growth=allow_growth
         )
 
-    #pdindex = pd.MultiIndex.from_product(
-    #    [[DLCscorer], dlc_cfg["all_joints_names"], xyz_labs],
-    #    names=["scorer", "bodyparts", "coords"],
-    #)
-
     pdindex = [s+'('+x+')' for s in dlc_cfg["all_joints_names"] for x in xyz_labs]
 
-    ##################################################
     # Looping over videos
-    ##################################################
-    #Videos = auxiliaryfunctions.get_list_of_videos(videos, videotype, in_random_order)
+
     Videos = videos
     if len(Videos) > 0:
         if "multi-animal" in dlc_cfg["dataset_type"]:
@@ -681,21 +674,21 @@ def analyze_videos(
             )
 
         os.chdir(str(start_path))
-        # if "multi-animal" in dlc_cfg["dataset_type"]:
-        #     print(
-        #         "The videos are analyzed. Time to assemble animals and track 'em... \n Call 'create_video_with_all_detections' to check multi-animal detection quality before tracking."
-        #     )
-        #     print(
-        #         "If the tracking is not satisfactory for some videos, consider expanding the training set. You can use the function 'extract_outlier_frames' to extract a few representative outlier frames."
-        #     )
-        # else:
-        #     print(
-        #         "The videos are analyzed. Now your research can truly start! \n You can create labeled videos with 'create_labeled_video'"
-        #     )
-        #     print(
-        #         "If the tracking is not satisfactory for some videos, consider expanding the training set. You can use the function 'extract_outlier_frames' to extract a few representative outlier frames."
-        #     )
-        return DataMachine # DLCscorer # note: this is either DLCscorer or DLCscorerlegacy depending on what was used!
+
+        remove = np.full(len(pdindex)/3,0)
+        cont = 0
+        for i in range(0,len(pdindex),3):
+            DataMachine.loc[DataMachine[pdindex[i+2]] < 0.85, [pdindex[i],pdindex[i+1]]] = [0,0]
+            remove[cont] = i+2
+            cont += 1
+        
+        array = np.asarray(DataMachine)
+        array = array[:, [i for i in range(array.shape[1]) if i not in remove]]
+
+        index = np.asarray(pdindex)
+        index = index[[i for i in range(index.shape[0]) if i not in remove]]
+
+        return array,index # DLCscorer # note: this is either DLCscorer or DLCscorerlegacy depending on what was used!
     else:
         print("No video(s) were found. Please check your paths and/or 'video_type'.")
         return DLCscorer
@@ -731,9 +724,7 @@ def GetPoseF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
     )
     batch_ind = 0  # keeps track of which image within a batch should be written to
     batch_num = 0  # keeps track of which batch you are at
-    # ny, nx = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)), int(
-    #     cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-    # )
+
     ny, nx = cap[0].shape[:2]
     if cfg["cropping"]:
         ny, nx = checkcropping(cfg, cap)
@@ -741,15 +732,10 @@ def GetPoseF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
     frames = np.empty(
         (batchsize, ny, nx, 3), dtype="ubyte"
     )  # this keeps all frames in a batch
-    # pbar = tqdm(total=nframes)
+
     counter = 0
-    #step = max(10, int(nframes / 100))
     inds = []
-    # while cap.isOpened():
-    #     if counter != 0 and counter % step == 0:
-    #         pbar.update(step)
-    #     ret, frame = cap.read()
-    #     if ret:
+
     for frame in cap:
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         if cfg["cropping"]:
@@ -767,16 +753,9 @@ def GetPoseF(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes, batchsize):
             batch_num += 1
         else:
             batch_ind += 1
-            # elif counter >= nframes:
-            #     if batch_ind > 0:
-            #         pose = predict.getposeNP(
-            #             frames, dlc_cfg, sess, inputs, outputs
-            #         )  # process the whole batch (some frames might be from previous batch!)
-            #         PredictedData[inds[:batch_ind]] = pose[:batch_ind]
-            #     break
+
         counter += 1
 
-    # pbar.close()
     return PredictedData, nframes
 
 
@@ -788,15 +767,8 @@ def GetPoseS(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes):
     PredictedData = np.zeros(
         (nframes, dlc_cfg["num_outputs"] * 3 * len(dlc_cfg["all_joints_names"]))
     )
-    # pbar = tqdm(total=nframes)
-    counter = 0
-    step = max(10, int(nframes / 100))
-    # while cap.isOpened():
-    #     if counter != 0 and counter % step == 0:
-    #         pbar.update(step)
 
-    #     ret, frame = cap.read()
-    #     if ret:
+    counter = 0
     frames = cap
     for frame in frames:
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -812,11 +784,8 @@ def GetPoseS(cfg, dlc_cfg, sess, inputs, outputs, cap, nframes):
         ] = (
             pose.flatten()
         )  # NOTE: thereby cfg['all_joints_names'] should be same order as bodyparts!
-            # elif counter >= nframes:
-            #     break
-        counter += 1
 
-    # pbar.close()
+        counter += 1
     return PredictedData, nframes
 
 
@@ -1018,49 +987,13 @@ def AnalyzeVideo(
     use_openvino="CPU" if is_openvino_available else None,
 ):
     """Helper function for analyzing a video."""
-    # print("Starting to analyze % ", video)
-    # print("Starting to analyze")
 
-    # if destfolder is None:
-    #     destfolder = str(Path(video).parents[0])
-    # auxiliaryfunctions.attempt_to_make_folder(destfolder)
-    # vname = Path(video).stem
-    # try:
-    #     _ = auxiliaryfunctions.load_analyzed_data(destfolder, vname, DLCscorer)
-    # except FileNotFoundError:
-    # print("Loading ", video)
-    # cap = cv2.VideoCapture(video)
-    # if not cap.isOpened():
-    #     raise IOError(
-    #         "Video could not be opened. Please check that the the file integrity."
-    #     )
-    # # https://docs.opencv.org/2.4/modules/highgui/doc/reading_and_writing_images_and_video.html#videocapture-get
-    # fps = cap.get(cv2.CAP_PROP_FPS)
     nframes = len(video)
-    # duration = nframes * 1.0 / fps
-    # size = (
-    #     int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
-    #     int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
-    # )
     ny, nx = video[0].shape[:2]
-    # print(
-    #     "Duration of video [s]: ",
-    #     round(duration, 2),
-    #     ", recorded with ",
-    #     round(fps, 2),
-    #     "fps!",
-    # )
-    # print(
-    #     "Overall # of frames: ",
-    #     nframes,
-    #     " found with (before cropping) frame dimensions: ",
-    #     nx,
-    #     ny,
-    # )
-
+    
     dynamic_analysis_state, detectiontreshold, margin = dynamic
     start = time.time()
-    # print("Starting to extract posture")
+
     if dynamic_analysis_state:
         PredictedData, nframes = GetPoseDynamic(
             cfg,
@@ -1113,37 +1046,8 @@ def AnalyzeVideo(
     else:
         coords = [0, nx, 0, ny]
 
-    # dictionary = {
-    #     "start": start,
-    #     "stop": stop,
-    #     "run_duration": stop - start,
-    #     "Scorer": DLCscorer,
-    #     "DLC-model-config file": dlc_cfg,
-    #     "fps": fps,
-    #     "batch_size": dlc_cfg["batch_size"],
-    #     "frame_dimensions": (ny, nx),
-    #     "nframes": nframes,
-    #     "iteration (active-learning)": cfg["iteration"],
-    #     "training set fraction": trainFraction,
-    #     "cropping": cfg["cropping"],
-    #     "cropping_parameters": coords
-    #     # "gpu_info": device_lib.list_local_devices()
-    # }
-    # metadata = {"data": dictionary}
-
-    # print(f"Saving results in {destfolder}...")
-    # dataname = os.path.join(destfolder, vname + DLCscorer + ".h5")
-    # auxiliaryfunctions.save_data(
-    #     PredictedData[:nframes, :],
-    #     metadata,
-    #     dataname,
-    #     pdindex,
-    #     range(nframes),
-    #     save_as_csv,
-    # ) 
-    # auxiliaryfunctions.show_data(DataMachine = pd.DataFrame(PredictedData[:nframes, :], columns=pdindex, index=range(nframes)))
     DataMachine = pd.DataFrame(PredictedData[:nframes, :], columns=pdindex, index=range(nframes))
-    # finally:
+
     return DLCscorer, DataMachine
 
 
