@@ -688,7 +688,7 @@ def analyze_videos(
         index = np.asarray(pdindex)
         index = np.delete(index,remove)
 
-        return array,index # DLCscorer # note: this is either DLCscorer or DLCscorerlegacy depending on what was used!
+        return index # DLCscorer # note: this is either DLCscorer or DLCscorerlegacy depending on what was used!
     else:
         print("No video(s) were found. Please check your paths and/or 'video_type'.")
         return DLCscorer
