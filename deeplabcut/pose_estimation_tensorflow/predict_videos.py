@@ -675,7 +675,7 @@ def analyze_videos(
 
         os.chdir(str(start_path))
 
-        remove = np.full(len(pdindex)/3,0)
+        remove = np.full(int(len(pdindex)/3),0)
         cont = 0
         for i in range(0,len(pdindex),3):
             DataMachine.loc[DataMachine[pdindex[i+2]] < 0.85, [pdindex[i],pdindex[i+1]]] = [0,0]
@@ -688,9 +688,7 @@ def analyze_videos(
         index = np.asarray(pdindex)
         index = np.delete(index,remove)
 
-        print(index)
-
-        return array # DLCscorer # note: this is either DLCscorer or DLCscorerlegacy depending on what was used!
+        return array,index # DLCscorer # note: this is either DLCscorer or DLCscorerlegacy depending on what was used!
     else:
         print("No video(s) were found. Please check your paths and/or 'video_type'.")
         return DLCscorer
