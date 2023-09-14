@@ -685,7 +685,7 @@ def analyze_videos(
         array = np.asarray(DataMachine)
         array = np.delete(array,remove)
 
-        print(array.shape)
+        print(DataMachine)
 
         index = np.asarray(pdindex)
         index = np.delete(index,remove)
