@@ -678,7 +678,7 @@ def analyze_videos(
         remove = np.full(int(len(pdindex)/3),0)
         cont = 0
         for i in range(0,len(pdindex),3):
-            DataMachine.loc[DataMachine[pdindex[i+2]] < 0.85, [pdindex[i],pdindex[i+1]]] = [0,0]
+            DataMachine.loc[DataMachine[pdindex[i+2]] < 0.50, [pdindex[i],pdindex[i+1]]] = [0,0]
             remove[cont] = i+2
             cont += 1
         
