@@ -1020,22 +1020,22 @@ def AnalyzeVideo(
                 int(dlc_cfg["batch_size"]),
             )
             if use_openvino:
-                # print('use_openvino')
+                print('use_openvino')
                 PredictedData, nframes = GetPoseF_OV(*args)
             elif TFGPUinference:
-                # print('TFGPUinference')
+                print('TFGPUinference')
                 PredictedData, nframes = GetPoseF_GTF(*args)
             else:
-                # print('GetPoseF')
+                print('GetPoseF')
                 PredictedData, nframes = GetPoseF(*args)
         else:
             if TFGPUinference:
-                # print('TFGPUinference with the batchsize < 1')
+                print('TFGPUinference with the batchsize < 1')
                 PredictedData, nframes = GetPoseS_GTF(
                     cfg, dlc_cfg, sess, inputs, outputs, video, nframes
                 )
             else:
-                # print('GetPoseS with the batchsize < 1')
+                print('GetPoseS with the batchsize < 1')
                 PredictedData, nframes = GetPoseS(
                     cfg, dlc_cfg, sess, inputs, outputs, video, nframes
                 )
