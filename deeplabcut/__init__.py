@@ -126,3 +126,5 @@ from deeplabcut.refine_training_dataset import (
     find_outliers_in_raw_data,
 )
 from deeplabcut.post_processing import filterpredictions, analyzeskeleton
+
+import deeplabcut.utils.auxiliaryfunctions
