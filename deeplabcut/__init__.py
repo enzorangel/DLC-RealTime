@@ -110,6 +110,7 @@ from deeplabcut.pose_estimation_tensorflow import (
     export_model,
     video_inference_superanimal,
     core,
+    config,
 )
 
 
