@@ -98,6 +98,7 @@ from deeplabcut.pose_estimation_tensorflow import (
     evaluate_network,
     return_evaluate_network_data,
     analyze_videos,
+    AnalyzeVideo,
     create_tracking_dataset,
     analyze_time_lapse_frames,
     convert_detections2tracklets,
