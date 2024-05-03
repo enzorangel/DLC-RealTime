@@ -870,6 +870,7 @@ def create_training_dataset(
         )
         if Data is None:
             return
+        print(Data)
         Data = Data[scorer]  # extract labeled data
 
         # loading & linking pretrained models
