@@ -671,7 +671,9 @@ def mergeandsplit(config, trainindex=0, uniform=True):
 @lru_cache(maxsize=None)
 def read_image_shape_fast(path):
     # Blazing fast and does not load the image into memory
+    print('Open')
     with Image.open(path) as img:
+        print('Oi')
         width, height = img.size
         return len(img.getbands()), height, width
 
