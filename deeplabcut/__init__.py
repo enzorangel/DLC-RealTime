@@ -100,6 +100,7 @@ from deeplabcut.pose_estimation_tensorflow import (
     analyze_videos,
     AnalyzeVideo,
     GetPoseF,
+    GetPoseF_GTF,
     create_tracking_dataset,
     analyze_time_lapse_frames,
     convert_detections2tracklets,
